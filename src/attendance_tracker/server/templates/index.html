@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSU Esports Attendance Tracker</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    {# Header #}
+    <header class="csu-header">
+      <div class="header-brand">
+        <div class="header-logo">
+          <img src="/static/CSUVikingLogo.avif" alt="CSU Vikings Logo" class="logo-img">
+        </div>
+        <div class="header-text">
+          <span class="university-name">Cleveland State University</span>
+          <span class="app-subtitle">Esports Attendance Tracker</span>
+        </div>
+      </div>
+      <button id="btn-register-open" class="btn-outline-gold">Register Student</button>
+    </header>
+
+    {# Tab Nav #}
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="attendance">Attendance</button>
+      <button class="tab-btn" data-tab="gear">Gear Checkout</button>
+      <button class="tab-btn" data-tab="history">History</button>
+      <button class="tab-btn" data-tab="students">Students</button>
+      <button class="tab-btn" data-tab="reports">Reports</button>
+    </nav>
+
+    <main>
+
+      
+
+    </main>
+
+  <script>
+    // alert() can be used to get a popup message to the user.
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove("hidden");
+    }
+
+    // Register Modal
+    document.getElementById("btn-register-open").addEventListener("click", () => {
+      openModal("modal-register");
+      document.getElementById("full_name").focus();
+    });
+  </script>
+</body>
+</html>
