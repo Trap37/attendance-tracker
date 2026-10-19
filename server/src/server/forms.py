@@ -1,5 +1,7 @@
+from datetime import date, timedelta
+
 from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField, SubmitField
+from wtforms import DateField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
 
@@ -8,9 +10,16 @@ class ScanForm(FlaskForm):
     submit = SubmitField('Scan')
 
 
+# TODO: start and end date field should have a default value of one month ago and today, respectively.
 class AttendanceHistoryCardForm(FlaskForm):
-    start_date = StringField('Start Date', validators=[DataRequired()])
-    end_date = StringField('End Date', validators=[DataRequired()])
+    start_date = DateField(
+        'Start Date',
+        validators=[DataRequired()],
+        default=lambda: date.today() - timedelta(days=30),
+    )
+    end_date = DateField(
+        'End Date', validators=[DataRequired()], default=lambda: date.today()
+    )
     submit = SubmitField('Load')
 
 

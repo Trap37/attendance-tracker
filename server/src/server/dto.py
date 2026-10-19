@@ -24,7 +24,3 @@ class GearStats:
         ]
 
         return checkouts
-
-
-for row in GearStats.checkouts():
-    print(type(row['items']))

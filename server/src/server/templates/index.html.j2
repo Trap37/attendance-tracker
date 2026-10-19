@@ -28,11 +28,16 @@
 
     <!-- ── TAB NAV ────────────────────────────────────────────────────────── -->
     <nav class="tab-nav">
-      {% for tab in tabs %}
+      {# {% for tab in tabs %}
       <button type="button" class="tab-btn {{ 'active' if loop.first else ''}}" data-tab="{{ tab.id }}"
         aria-controls="tab-{{ tab.id }}" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ tab.label }}
       </button>
-      {% endfor %}
+      {% endfor %} #}
+      <button class="tab-btn active" data-tab="attendance">Attendance</button>
+      <button class="tab-btn" data-tab="gear">Gear Checkout</button>
+      <button class="tab-btn" data-tab="history">History</button>
+      <button class="tab-btn" data-tab="students">Students</button>
+      <button class="tab-btn" data-tab="reports">Reports</button>
     </nav>
 
     <main class="main-content">
@@ -92,7 +97,6 @@
 
         <div class="stat-cards-row">
           <div class="stat-card">
-            {# #XXX: Might want to reconsider passing the class #}
             <span class="stat-label">Total Checked Out</span>
             <span id="stat-total" class="stat-number">{{ gear_stats.total }}</span>
           </div>
@@ -112,10 +116,10 @@
 
         <div class="card">
           <h2 class="card-title">Currently Checked Out</h2>
-          <div id="checkout-empty" class="empty-state-block {{ 'hidden' if gear_checkouts else '' }}">
-            No gear currently checked out
-          </div>
-          <table id="checkout-table" class="checkout-table {{ 'hidden' if not gear_checkouts else '' }}">
+          {% if not gear_checkouts %}
+          <div id="checkout-empty" class="empty-state-block">No gear currently checked out</div>
+          {% else%}
+          <table id="checkout-table" class="checkout-table">
             <thead>
               <tr>
                 <th>Student</th>
@@ -141,6 +145,7 @@
               {% endfor %}
             </tbody>
           </table>
+          {% endif %}
         </div>
       </section>
 
@@ -152,26 +157,30 @@
           <form method="post" action="{{ url_for('attendance_history') }}">
             {{ attendance_history_form.hidden_tag() }}
 
-
+            <div class="filter-row">
+              <div class="form-group">
+                {{ macros.render_field(attendance_history_form.start_date, "Start date") }}
+              </div>
+              <div class="form-group">
+                {{ macros.render_field(attendance_history_form.end_date, "End date") }}
+              </div>
+              {{ attendance_history_form.submit(id="btn-history-load", class="btn-dark-green") }}
+            </div>
           </form>
 
+          <p id="history-summary" class="modal-hint" style="margin-top:0.75rem;">
+            {% if not history_start_date or not history_end_date %}
+            Please select both a start and end date.
+            {% else %}
+            {# #TODO: This should be italicized #}
+            `{{ history_records_data | length }} scan(s) between {{ history_start_date }} and {{ history_end_date }}.`
+            {% endif %}
+          </p>
 
-
-          <div class="filter-row">
-            <div class="form-group">
-              <label for="hist-start">Start date</label>
-              <input id="hist-start" type="date">
-            </div>
-            <div class="form-group">
-              <label for="hist-end">End date</label>
-              <input id="hist-end" type="date">
-            </div>
-            <button id="btn-history-load" class="btn-dark-green">Load</button>
-          </div>
-
-          <p id="history-summary" class="modal-hint" style="margin-top:0.75rem;"></p>
+          {% if not history_records_data %}
           <div id="history-empty" class="empty-state-block">Pick a date range and press Load.</div>
-          <table id="history-table" class="checkout-table hidden">
+          {% else %}
+          <table id="history-table" class="checkout-table">
             <thead>
               <tr>
                 <th>Time</th>
@@ -181,8 +190,21 @@
                 <th>Major</th>
               </tr>
             </thead>
-            <tbody id="history-tbody"></tbody>
+            <tbody id="history-tbody">
+              {% for record in history_records_data %}
+              <tr>
+                {# #TODO: Add checkout time here after check in time #}
+                {# #TODO: I don't like how this is formatted #}
+                <td>{{ record.check_in_time }}</td>
+                <td>{{ record.day_of_week }}</td>
+                <td>{{ record.full_name }}</td>
+                <td>{{ record.scanner_id }}</td>
+                <td>{{ record.major }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
           </table>
+          {% endif %}
         </div>
       </section>
     </main>
