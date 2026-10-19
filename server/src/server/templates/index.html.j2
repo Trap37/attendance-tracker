@@ -1,0 +1,162 @@
+{% import "_macros.html.j2" as macros %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSU Esports Attendance Tracker</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+
+  <body>
+    {# Header #}
+    <header class="csu-header">
+      <div class="header-brand">
+        <div class="header-logo">
+          <img src="/static/CSUVikingLogo.avif" alt="CSU Vikings Logo" class="logo-img">
+        </div>
+        <div class="header-text">
+          <span class="university-name">Cleveland State University</span>
+          <span class="app-subtitle">Esports Attendance Tracker</span>
+        </div>
+      </div>
+      <button id="btn-register-open" class="btn-outline-gold">Register Student</button>
+    </header>
+
+    {# Tab Nav #}
+    <nav class="tab-nav">
+      {% for tab in tabs %}
+      <button type="button" class="tab-btn {{ 'active' if loop.first else ''}}" data-tab="{{ tab.id }}"
+        aria-controls="tab-{{ tab.id }}" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ tab.label }}
+      </button>
+      {% endfor %}
+    </nav>
+
+    <main>
+
+      {# Attendance Tab #}
+      <section id="tab-attendance" class="tab-panel">
+
+        <div class="card scan-card">
+          <h2 class="card-title">Scan ID</h2>
+          <form method="post" action="{{ url_for('log_visit')}}">
+            {{ scan_form.hidden_tag() }}
+
+            {{ scan_form.scan_id(
+                class="scan-input",
+                placeholder="Scan or enter student ID...",
+                autocomplete="off",
+                autofocus=True,
+            )}}
+
+            {{ scan_form.submit() }}
+          </form>
+        </div>
+
+        <div class="two-col">
+          <div class="card scan-log-card">
+            <h2 class="card-title">Scan Log</h2>
+            <ul id="scan-log-list" class="scan-log-list">
+              {% if not scan_log %}
+              <li class="empty-state">No scans yet today</li>
+              {% else %}
+              {% for scan in scan_log %}
+              {# #TODO: log-entry-registered/unknown should be decided outside of here? #}
+              {# Can replace class="" with jinja var and scan var with scan.text_content or smth #}
+              <li class="log-entry-registered">{{ scan }}</li>
+              {% endfor %}
+              {% endif %}
+            </ul>
+          </div>
+          <div class="card attendance-card">
+            <h2 class="card-title">Today's Attendance</h2>
+            <p id="attendance-count" class="big-count">{{ scan_log|length }}</p>
+            <p class="big-count-label">Students</p>
+          </div>
+        </div>
+
+      </section>
+
+      {# Gear Checkout Tab #}
+      <section id="tab-gear" class="tab-panel hidden">
+        <div class="gear-header-row">
+          <div>
+            <h2 class="gear-title">Gear Checkout System</h2>
+            <p class="gear-subtitle">Track keyboards, mice, mousepads, and other equipment</p>
+          </div>
+          <button id="btn-checkout-open" class="btn-dark-green">Check Out Gear</button>
+        </div>
+
+        <div class="stat-cards-row">
+          <div class="stat-card">
+            <span class="stat-label">Total Checked Out</span>
+            <span id="stat-total" class="stat-number">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Keyboards</span>
+            <span id="stat-keyboards" class="stat-number">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Mice</span>
+            <span id="stat-mice" class="stat-number">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Other Gear</span>
+            <span id="stat-other" class="stat-number">0</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Currently Checked Out</h2>
+          <div id="checkout-empty" class="empty-state-block">No gear currently checked out</div>
+          <table id="checkout-table" class="checkout-table hidden">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Gear Items</th>
+                <th>Checkout Time</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="checkout-tbody"></tbody>
+          </table>
+        </div>
+
+      </section>
+    </main>
+
+    {# Modal: Register Student #}
+    <div id="modal-register" class="modal-overlay hidden" role="dialog" aria-modal="true">
+      <div class="modal-box">
+        <form action="{{ url_for('register_student') }}" method="post">
+          <div class="modal-header">
+            <h2 class="modal-title">Register Student</h2>
+          </div>
+
+          <div class="modal-body">
+            {{ registration_form.hidden_tag() }}
+
+            {{ macros.render_field(registration_form.full_name, "Brimstone") }}
+            {{ macros.render_field(registration_form.csu_id, "1234567") }}
+            {{ macros.render_field(registration_form.scan_id, "5 Digit number on back of ID") }}
+            {{ macros.render_field(registration_form.major, "Computer Science") }}
+            {{ macros.render_field(registration_form.grade, "") }}
+          </div>
+
+          <div class="modal-actions">
+            {{ registration_form.submit(id="btn-register-submit", class="btn-dark-green") }}
+            {{ registration_form.cancel(id="btn-register-cancel", class="btn-cancel") }}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // alert() can be used to get a popup message to the user.
+    </script>
+    <script src="/static/app.js"></script>
+  </body>
+
+</html>

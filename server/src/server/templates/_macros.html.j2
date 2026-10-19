@@ -1,0 +1,14 @@
+{% macro render_field(field, placeholder=none) %}
+<div class="form-group">
+  {{ field.label }}
+  {% if placeholder %}
+  {{ field(class="form-control", placeholder=placeholder) }}
+  {% else %}
+  {{ field(class="form-control") }}
+  {% endif %}
+
+  {% for error in field.errors %}
+  <div class="modal-error">{{ error }}</div>
+  {% endfor %}
+</div>
+{% endmacro %}
