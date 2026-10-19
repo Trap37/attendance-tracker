@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupTabs();
   setupOverlayDismiss();
   setupRegisterModal();
+  setupReturnModal();
 });
 
 // ── Focus management ──────────────────────────────────────────────────────────
@@ -47,27 +48,7 @@ function setupModalCloseButtons() {
   });
 }
 
-// Tab Navigation
-// const tabButtons = document.querySelectorAll(".tab-btn");
-// const tabPanels = document.querySelectorAll(".tab-panel");
-
-// tabButtons.forEach((button) => {
-//   button.addEventListener("click", () => {
-//     const selectedTab = button.dataset.tab;
-
-//     tabButtons.forEach((tabButton) => {
-//       const isActive = tabButton === button;
-
-//       tabButton.classList.toggle("active", isActive);
-//       tabButton.setAttribute("aria-selected", String(isActive));
-//     });
-
-//     tabPanels.forEach((panel) => {
-//       panel.classList.toggle("hidden", panel.id !== `tab-${selectedTab}`);
-//     });
-//   });
-// });
-
+// ── Tabs ──────────────────────────────────────────────────────────────────────
 function setupTabs() {
   document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -80,29 +61,9 @@ function setupTabs() {
       btn.classList.add("active");
       const panel = document.getElementById(`tab-${btn.dataset.tab}`);
       if (panel) panel.classList.remove("hidden");
-      if (btn.dataset.tab === "gear") {
-        loadGearTab();
-      } else if (btn.dataset.tab === "students") {
-        loadStudents();
-      } else if (btn.dataset.tab === "history") {
-        loadHistory();
-      } else if (btn.dataset.tab === "attendance") {
-        focusScanInput();
-      }
     });
   });
 }
-
-// ── Attendance scan ───────────────────────────────────────────────────────────
-// async function loadAttendance() {
-//   try {
-//     const res = await fetch("/api/attendance/today");
-//     const data = await res.json();
-//     document.getElementById("attendance-count").textContent = data.count;
-//   } catch {
-//     // Non-critical; don't surface to user
-//   }
-// }
 
 // ── Register Student modal ────────────────────────────────────────────────────
 function setupRegisterModal() {
@@ -120,4 +81,10 @@ function setupCheckoutModal() {
   });
 }
 
-// ── Gear tab data ─────────────────────────────────────────────────────────────
+// ── Return Gear modal ─────────────────────────────────────────────────────────
+function setupReturnModal() {
+  document.getElementById("btn-return-submit").addEventListener("click", () => {
+    openModal("modal-return");
+    document.getElementById("return-scan-input").focus();
+  });
+}

@@ -11,7 +11,8 @@
   </head>
 
   <body>
-    {# Header #}
+
+    <!-- ── HEADER ─────────────────────────────────────────────────────────── -->
     <header class="csu-header">
       <div class="header-brand">
         <div class="header-logo">
@@ -25,7 +26,7 @@
       <button id="btn-register-open" class="btn-outline-gold">Register Student</button>
     </header>
 
-    {# Tab Nav #}
+    <!-- ── TAB NAV ────────────────────────────────────────────────────────── -->
     <nav class="tab-nav">
       {% for tab in tabs %}
       <button type="button" class="tab-btn {{ 'active' if loop.first else ''}}" data-tab="{{ tab.id }}"
@@ -34,9 +35,9 @@
       {% endfor %}
     </nav>
 
-    <main>
+    <main class="main-content">
 
-      {# Attendance Tab #}
+      <!-- ── ATTENDANCE TAB ─────────────────────────────────────────────── -->
       <section id="tab-attendance" class="tab-panel">
 
         <div class="card scan-card">
@@ -79,7 +80,7 @@
 
       </section>
 
-      {# Gear Checkout Tab #}
+      <!-- ── GEAR CHECKOUT TAB ──────────────────────────────────────────── -->
       <section id="tab-gear" class="tab-panel hidden">
         <div class="gear-header-row">
           <div>
@@ -91,27 +92,30 @@
 
         <div class="stat-cards-row">
           <div class="stat-card">
+            {# #XXX: Might want to reconsider passing the class #}
             <span class="stat-label">Total Checked Out</span>
-            <span id="stat-total" class="stat-number">0</span>
+            <span id="stat-total" class="stat-number">{{ gear_stats.total }}</span>
           </div>
           <div class="stat-card">
             <span class="stat-label">Keyboards</span>
-            <span id="stat-keyboards" class="stat-number">0</span>
+            <span id="stat-keyboards" class="stat-number">{{ gear_stats.keyboards }}</span>
           </div>
           <div class="stat-card">
             <span class="stat-label">Mice</span>
-            <span id="stat-mice" class="stat-number">0</span>
+            <span id="stat-mice" class="stat-number">{{ gear_stats.mice }}</span>
           </div>
           <div class="stat-card">
             <span class="stat-label">Other Gear</span>
-            <span id="stat-other" class="stat-number">0</span>
+            <span id="stat-other" class="stat-number">{{ gear_stats.other_gear }}</span>
           </div>
         </div>
 
         <div class="card">
           <h2 class="card-title">Currently Checked Out</h2>
-          <div id="checkout-empty" class="empty-state-block">No gear currently checked out</div>
-          <table id="checkout-table" class="checkout-table hidden">
+          <div id="checkout-empty" class="empty-state-block {{ 'hidden' if gear_checkouts else '' }}">
+            No gear currently checked out
+          </div>
+          <table id="checkout-table" class="checkout-table {{ 'hidden' if not gear_checkouts else '' }}">
             <thead>
               <tr>
                 <th>Student</th>
@@ -120,10 +124,56 @@
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody id="checkout-tbody"></tbody>
+
+            <tbody id="checkout-tbody">
+              {% for row in gear_checkouts %}
+              <tr>
+                <td>{{ row.full_name }}</td>
+                <td>{{ row["items"] | join(", ") }}</td>
+                <td>{{ row.checkout_time }}</td>
+                <td>
+                  <button class="btn-return" data-checkout-id="{{ row.checkout_id }}" data-student="{{ row.full_name }}"
+                    data-items="{{ row['items'] | join(', ') }}">
+                    Return
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
           </table>
         </div>
+      </section>
 
+      <!-- ── HISTORY TAB ────────────────────────────────────────────────── -->
+      <section id="tab-history" class="tab-panel hidden">
+        <div class="card">
+          <h2 class="card-title">Attendance History</h2>
+          <div class="filter-row">
+            <div class="form-group">
+              <label for="hist-start">Start date</label>
+              <input id="hist-start" type="date">
+            </div>
+            <div class="form-group">
+              <label for="hist-end">End date</label>
+              <input id="hist-end" type="date">
+            </div>
+            <button id="btn-history-load" class="btn-dark-green">Load</button>
+          </div>
+          <p id="history-summary" class="modal-hint" style="margin-top:0.75rem;"></p>
+          <div id="history-empty" class="empty-state-block">Pick a date range and press Load.</div>
+          <table id="history-table" class="checkout-table hidden">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Day</th>
+                <th>Name</th>
+                <th>Scanner ID</th>
+                <th>Major</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
       </section>
     </main>
 

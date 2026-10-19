@@ -3,6 +3,7 @@ from typing import Any
 from flask import redirect, render_template, url_for
 
 from server import app
+from server.dto import GearStats
 from server.forms import ScanForm, StudentRegistrationModalForm
 
 # TODO:: scan_log must be populated with today's scans via Attendance model query
@@ -28,6 +29,8 @@ def index():
         registration_form=registration_form,
         tabs=tabs,
         scan_log=scan_log,
+        gear_stats=GearStats.stats(),
+        gear_checkouts=GearStats.checkouts(),
     )
 
 
