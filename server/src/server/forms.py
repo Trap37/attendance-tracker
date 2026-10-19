@@ -1,11 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, SelectField, StringField, SubmitField
+from wtforms import SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
 
 class ScanForm(FlaskForm):
     scan_id = StringField('Scan ID', validators=[DataRequired()])
     submit = SubmitField('Scan')
+
+
+class AttendanceHistoryCardForm(FlaskForm):
+    start_date = StringField('Start Date', validators=[DataRequired()])
+    end_date = StringField('End Date', validators=[DataRequired()])
+    submit = SubmitField('Load')
 
 
 class StudentRegistrationModalForm(FlaskForm):

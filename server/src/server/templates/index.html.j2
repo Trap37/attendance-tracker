@@ -146,8 +146,17 @@
 
       <!-- ── HISTORY TAB ────────────────────────────────────────────────── -->
       <section id="tab-history" class="tab-panel hidden">
+
         <div class="card">
           <h2 class="card-title">Attendance History</h2>
+          <form method="post" action="{{ url_for('attendance_history') }}">
+            {{ attendance_history_form.hidden_tag() }}
+
+
+          </form>
+
+
+
           <div class="filter-row">
             <div class="form-group">
               <label for="hist-start">Start date</label>
@@ -159,6 +168,7 @@
             </div>
             <button id="btn-history-load" class="btn-dark-green">Load</button>
           </div>
+
           <p id="history-summary" class="modal-hint" style="margin-top:0.75rem;"></p>
           <div id="history-empty" class="empty-state-block">Pick a date range and press Load.</div>
           <table id="history-table" class="checkout-table hidden">

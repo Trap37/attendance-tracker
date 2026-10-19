@@ -18,12 +18,7 @@ class GearStats:
                 'checkout_id': '1',
                 'scan_id': '12345',
                 'full_name': 'John Doe',
-                'items': [
-                    'total',
-                    'keyboards',
-                    'mice',
-                    'other_gear',
-                ],
+                'items': ['Keyboard', 'Mice', 'Mousepad', 'Headset'],
                 'Checkout Time': '2023-06-01 10:00:00',
             }
         ]

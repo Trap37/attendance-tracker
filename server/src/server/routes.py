@@ -4,9 +4,11 @@ from flask import redirect, render_template, url_for
 
 from server import app
 from server.dto import GearStats
-from server.forms import ScanForm, StudentRegistrationModalForm
+from server.forms import (AttendanceHistoryCardForm, ScanForm,
+                          StudentRegistrationModalForm)
 
 # TODO:: scan_log must be populated with today's scans via Attendance model query
+# TODO: Can maybe do something similar to what I did with GearStats class so this isn't here
 scan_log: list[Any] = []
 
 
@@ -22,6 +24,7 @@ def index():
         {'id': 'students', 'label': 'Students'},
         {'id': 'reports', 'label': 'Reports'},
     ]
+    attendance_history_form = AttendanceHistoryCardForm()
 
     return render_template(
         'index.html.j2',
@@ -31,6 +34,7 @@ def index():
         scan_log=scan_log,
         gear_stats=GearStats.stats(),
         gear_checkouts=GearStats.checkouts(),
+        attendance_history_form=attendance_history_form,
     )
 
 
@@ -38,6 +42,11 @@ def index():
 def log_visit():
     # TODO: Implement logic to log a student's visit
     return '', 204
+
+
+@app.post('/attendance_history')
+def attendance_history():
+    #TODO: Implement logic to retrieve 
 
 
 @app.post('/register_student')
